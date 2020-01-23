@@ -1,130 +1,160 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <script src="https://unpkg.com/docx@4.0.0/build/index.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.js"></script>
-    <script src="index.js"></script>
-</head>
-
-
-<body>
-    <div class="container-fluid">
-        <h1 class="page-header">Migration Script Generator</h1>
-        <form id="form" onchange="formListener(event)" onsubmit="Export2Doc(event,'exportContent')">
-            <div class="form-group">
-                Jira Ticket Number:<br>
-                <input type="text" name="ticketNumber" id="ticketNumber" required class="form-control col-3"><br>
-                Release Version:<br>
-                <input type="text" name="releaseVersion" id="releaseVersion" required class="form-control col-3"><br>
-                Environment Type:<br>
-                <select id = "enviornmentTypeList" name ="enviornmentTypeList" required class="form-control col-3" required>
-                    <option name="enviornmentType" value = "DEV">DEV</option>
-                    <option name="enviornmentType" value = "TST">TST</option>
-                    <option name="enviornmentType" value = "PRD">PRD</option>                               
-                </select><br>                
-
-                <label>Data mart</label>
-                <select id = "datamartList" name ="datamartList" required class="form-control col-3">
-                    <option name="datamart" value = ""></option>
-                    <option name="datamart" value = "ADMDASH">ADMDASH</option>
-                    <option name="datamart" value = "ARD">ARD</option>
-                    <option name="datamart" value = "EFFORT">EFFORT</option>
-                    <option name="datamart" value = "ENDOWMENT">ENDOWMENT</option>
-                    <option name="datamart" value = "FAMIS">FAMIS</option>
-                    <option name="datamart" value = "FASIS">FASIS</option>
-                    <option name="datamart" value = "INFOED">INFOED</option>
-                    <option name="datamart" value = "INVO">INVO</option>
-                    <option name="datamart" value = "NUCORE">NUCORE</option>
-                    <option name="datamart" value = "NUFIN">NUFIN</option>
-                    <option name="datamart" value = "RESEARCH">RESEARCH</option>
-                    <option name="datamart" value = "STUDENT">STUDENT</option>                                  
-                </select><br>
-
-                Sequences or jobs created:<br>
-                <textarea name="newSquencesJobs" id="newSquencesJobs" class="form-control col-3"></textarea><br>
-                Sequences or jobs altered:<br>
-                <textarea name="alteredSquencesJobs" id="alteredSquencesJobs" class="form-control col-3"></textarea><br>
-                DDLs created:<br>
-                <textarea name="ddlsCreated" id="ddlsCreated" class="form-control col-3"></textarea><br>
-                DDLs altered:<br>
-                <textarea name="ddlsAltered" id="ddlsAltered" class="form-control col-3"></textarea><br>
+   <head>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+      <script src="https://unpkg.com/docx@4.0.0/build/index.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.js"></script>
+   </head>
+   <body>
+      <div class="container-fluid">
+         <h1 class="page-header">Migration Script Generator</h1>
+         <form id="form" onchange="formListener(event)" onsubmit="Export2Doc(event,'exportContent')">
+            <div class="row d-flex justify-content-center" >
+               <div class="col-md-6">
+                  <div class="form-group">
+                     Jira Ticket Number *<br>
+                     <input type="text" name="ticketNumber" id="ticketNumber" required class="form-control col-3"><br>
+                     Release Version *<br>
+                     <input type="text" name="releaseVersion" id="releaseVersion" required class="form-control col-3"><br>
+                     Environment Type *<br>
+                     <select id = "enviornmentTypeList" name = "enviornmentTypeList" required class="form-control col-3" required>
+                        <option name="enviornmentType" value = ""></option>
+                        <option name="enviornmentType" value = "TST">TST</option>
+                        <option name="enviornmentType" value = "PRD">PRD</option>
+                     </select>
+                     <br>                
+                     <label>Data Mart *</label>
+                     <select id = "datamartList" name ="datamartList" required class="form-control col-3">
+                        <option name="datamart" value = ""></option>
+                        <option name="datamart" value = "ADMDASH">ADMDASH</option>
+                        <option name="datamart" value = "ARD">ARD</option>
+                        <option name="datamart" value = "EFFORT">EFFORT</option>
+                        <option name="datamart" value = "ENDW">ENDW</option>
+                        <option name="datamart" value = "FAMIS">FAMIS</option>
+                        <option name="datamart" value = "FASIS">FASIS</option>
+                        <option name="datamart" value = "INFOED">INFOED</option>
+                        <option name="datamart" value = "INVO">INVO</option>
+                        <option name="datamart" value = "NUCORE">NUCORE</option>
+                        <option name="datamart" value = "NUFIN">NUFIN</option>
+                        <option name="datamart" value = "RESEARCH">RESEARCH</option>
+                        <option name="datamart" value = "STUDENT">STUDENT</option>
+                     </select>
+                     <br>
+                  </div>
+               </div>
+               <div class="col-md-6">
+                  Special Instructions<br>
+                  <textarea name="specialInstructions" id="specialInstructions" class="form-control col-10"></textarea><br>
+                  DDLs created (seperate each DDL with a new line)<br>
+                  <textarea name="ddlsCreated" id="ddlsCreated" class="form-control col-10"></textarea><br>
+                  DDLs altered (seperate each DDL with a new line)<br>
+                  <textarea name="ddlsAltered" id="ddlsAltered" class="form-control col-10"></textarea><br>
+                  Sequences or jobs created (seperate each job with a new line)<br>
+                  <textarea name="newSquencesJobs" id="newSquencesJobs" class="form-control col-10"></textarea><br>
+                  Sequences or jobs altered (seperate each job with a new line)<br>
+                  <textarea name="alteredSquencesJobs" id="alteredSquencesJobs" class="form-control col-10"></textarea><br>
+                  Environment variables created (seperate each variable with a new line)<br>
+                  <textarea name="environmentVariablesNew" id="environmentVariablesNew" class="form-control col-10"></textarea><br>
+                  Environment variables altered (seperate each variable with a new line)<br>
+                  <textarea name="environmentVariablesAltered" id="environmentVariablesAltered" class="form-control col-10"></textarea><br>
+                  <button type="submit" class="btn btn-primary">Export as .doc</button>
+                  
+               </div>
             </div>
-            <button type="submit" class="btn btn-primary">Export as .doc</button>
-        </form>
-    </div>
-    <!-- <div style="visibility: hidden;"> -->
-        <div id="exportContent">
-            <img src="https://www.northwestern.edu/brand/images/formal-lockup/nu-horizontal.gif" class="rounded mx-auto d-block">
+         </form>
+      </div>
+      <div>
+         <div id="exportContent">
+            <img src="https://www.northwestern.edu/brand/images/formal-lockup/nu-horizontal.gif" >
             <div id="docTitle"></div>
             <div>
-                <p><b><u>ETL Migration Summary</u></b></p>
-                <ol>
-                    <li>DDL Migration</li>
-                        <ul id="newDDLS">                             
-                        </ul>
-                        <ul id="alteredDDLS">                             
-                        </ul>
-                    <li>Environment Variables</li>
-                        <ul id="environmentVariables">
-                        </ul>
-                    <li>DataStage ETLs</li>
-                        <ul id="newETLS" >    
-                        </ul>
-                        <ul id="alteredETLS" >    
-                        </ul>
-                </ol>
+               <p><b><u>ETL Migration Summary</u></b></p>
+               <ol>
+                  <li>DDL Migration</li>
+                  (New DDLs)<br>
+                  <ul id="newDDLS">
+                    <li>NONE</li>                              
+                  </ul>
+                  (Altered DDLs)<br>
+                  <ul id="alteredDDLS">  
+                    <li>NONE</li>                
+                  </ul>
+                  <li>Environment Variables</li>
+                  (New Variables)<br>
+                  <ul id="environmentVariablesList">
+                    <li>NONE</li> 
+                  </ul>
+                  (Altered Variables)<br>
+                  <ul id="environmentVariablesList2">
+                    <li>NONE</li> 
+                  </ul>
+                  <li>DataStage ETLs</li>
+                  (New ETLs)<br>
+                  <ul id="newETLS" >
+                    <li>NONE</li>     
+                  </ul>
+                  (Altered ETLs)<br>
+                  <ul id="alteredETLS" >
+                    <li>NONE</li>     
+                  </ul>
+               </ol>
             </div>
-            <div>
-                <p><b><u>Part 1 - Migrate DDL</u></b></p>
-                <ol >
-                    <li><b>DDL Migration</b></li>
-                        <ul>
-                            <li id="ddlMigrateOne">Back up view PS_D_DEPT_NU to \FFRA\trunk\Releases\DMA-NUFIN 1.7 RC1\backup PS_D_DEPT_NU.sql</li>  
-                            <li id="ddlMigrateTwo">Back up view PS_F_KK_LEDGER_NU \FFRA\trunk\Releases\DMA-NUFIN 1.7 RC1\backup  PS_F_KK_LEDGER_NU.sql </li>   
-                        </ul>
-                    <li><b>Execute SQL Script</b></li>
-                        <ul>
-                            <li id="executeOne">Open \FFRA\trunk\Releases\DMA-NUFIN 1.7 RC1\import SQLScript.sql</li>
-                            <li id="executeTwo">Run SQL Script from your SQL Client</li>                           
-                        </ul>
-                    <li><b>Peform Schema Diff</b></li>
-                </ol >
+            <div id="specialInstructionsSection">
+                <p style="color: red;"><b><u>Special Instructions</u></b></p>
+                <div style="color: red;" id="specialInstructionsDoc"></div>
             </div>
-            <div>
-                <p><b><u>Part 2 - Migrate DataStage ETL</u></b></p>
-                <ol>
-                    <li id="backupPre"><b>Back up entire Batch_NUFIN (pre migration)</b></li>
-                        <ul>
-                            <li id="backupOne">Open DS Designer and log on to NUFIN_TST on ERADS12</li>
-                            <li id="backupTwo">Export Batch_ NUFIN, with executables, exclude read-only to 
-                            \FFRA\trunk\Releases\DMA-NUFIN 1.7 RC1\backup  Batch_Nufin_ TST_Pre.dsx</li>
-                            <li id="backupThree">Commit to SVN with comment “Nufin 1.7 RC1 to TST before migration”</li>
-                        </ul>
-                    <li id="migrateDsx"><b>Migrate DSX to Nufin_TST</b></li>
-                        <ul>
-                            <li id="migrateOne">Open DS Designer and log on to Nufin _TST on ERADS12</li>
-                            <li id="migrateTwo">Import the file below, already saved to subversion:
-                            \FFRA\trunk\Releases\DMA-NUFIN 1.7 RC1\1.7RC1.dsx 
-                            (contains the jobs listed above)</li id="migrateOne">
-                            <li id="migrateThree">Compile job (Tools -> Multiple Job Compile (All Jobs)</li id="migrateOne">
-                        </ul>
-                    <li id="backupPost"><b>Backup entire Batch_NUFIN ETL (post migration)</b></li>
-                        <ul>
-                            <li id="backupFour">Export Batch_NUFIN, with executables, exclude read-only to
-                            \FFRA\trunk\Releases\DMA-NUFIN 1.7 RC1\backup  Batch_Nufin_ TST_Post_Release.dsx</li>
-                            <li id="backupFive">Commit to SVN with comment “Nufin 1.7RC1 to TST after migration”</li>
-                            <li id="backupSix">Close DS Designer connection to Nufin _TST on ERADS12</li>
-                                
-                        </ul>
+            <div id="migrateDDL">
+               <p><b><u>Migrate DDL</u></b></p>
+               <ol >
+                  <li><b>DDL Migration</b></li>
+                  <p id="ddlsMigrationP"></p>
+                  <ul id="ddlsMigration"> 
+                  </ul>
+                  <li><b>Execute SQL Script</b></li>
+                  <ul>
+                     <li id="executeOne"></li>
+                     <li id="executeTwo">Run SQL Script from your SQL Client</li>
+                  </ul>
+                  <li><b>Peform Schema Diff</b></li>
+               </ol >
+            </div>
+            <div id="migrateDataStageETL">
+               <p><b><u>Migrate DataStage ETL</u></b></p>
+               <ol>
+                  <li id="backupPre"><b></b></li>
+                  <ul>
+                     <li id="backupOne"></li>
+                     <li id="backupTwo"></li>
+                     <li id="backupThree"></li>
+                  </ul>
+                  <li id="migrateDsx"><b></b></li>
+                  <ul>
+                     <li id="migrateOne"></li>
+                     <li id="migrateTwo"></li>
+                     <li id="migrateThree">Compile job (Tools -> Multiple Job Compile (All Jobs)</li id="migrateOne">
+                  </ul>
+                  <li id="backupPost"><b></b></li>
+                  <ul>
+                     <li id="backupFour"></li>
+                     <li id="backupFive"></li>
+                     <li id="backupSix"></li>
+                  </ul>
+               </ol>
+            </div>
+            <div id="migrateEnvironmentVariables">
+                <p><b><u>Migrate Environment Variables</u></b></p>
+                <ol id="enviromentVariablesUL">
+                    <li id="migrateVariableOne"></li>
+                    <li id="migrateVariableTwo"></li>
+                    <li id="migrateVariableThree"></li>
                 </ol>
-            </div>                
-        </div>
-    <!-- </div> -->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-</body>
-
+             </div>            
+         </div>
+      </div>
+      </div>
+      <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+      <script src="index.js"></script>
+   </body>
 </html>
